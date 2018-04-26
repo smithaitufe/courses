@@ -1,0 +1,141 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+type Query {
+  companies: [Company]
+  company(id: String!): Company
+  categories: [Category!]
+  category(id: String!): Category
+  courses(title: String): [Course]
+  course(id: String!): Course
+  enrollments(userId: String, courseId: String): [Enrollment!]
+  users: [User!]
+  user(id: String!): User
+  roles: [Role!]
+  role(id: String!): Role
+}
+
+scalar Time
+
+type Mutation {
+  createCompany(input: CompanyInput): CommonPayload
+  createCategory(input: CategoryInput): CommonPayload
+  createCourse(input: CourseInput): CommonPayload
+  createUser(input: UserInput): CommonPayload
+  createRole(input: RoleInput): CommonPayload
+  createEnrollment(input: EnrollmentInput): CommonPayload
+
+}
+
+
+type Error {
+  key: String
+  message: String
+}
+type CommonPayload {
+  ok: Boolean!
+  errors: [Error]
+}
+
+
+type Category {
+  id: String!
+  name: String!
+  parentId: String
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+input CategoryInput {
+  name: String!
+  parentId: String
+}
+
+
+type Company {
+  id: String!
+  name: String!
+  createdAt: Time!
+  updatedAt: Time!
+  courses: [Course!]
+}
+input CompanyInput {
+  name: String!
+}
+
+type Course {
+  id: String!
+  code: String!
+  title: String!
+  hours: Int!
+  amount: Float!
+  categoryId: String!
+  companyId: String!
+  createdAt: Time!
+  updatedAt: Time!
+  company: Company!
+  category: Category!
+  overview: String!
+  description: String!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+
+input CourseInput {
+  code: String!
+  title: String!
+  hours: Int!
+  amount: Float!
+  categoryId: String!
+  companyId: String!
+}
+
+
+type User {
+  id: String!
+  firstName: String!
+  lastName: String!
+  email: String!
+  phoneNumber: String!
+  country: String!
+  dialingCode: String!
+  roles: [Role!]
+  createdAt: Time!
+  updatedAt: Time!
+}
+input UserInput {
+  firstName: String!
+  lastName: String!
+  email: String!
+  phoneNumber: String!
+  country: String!
+  dialingCode: String!
+  password: String!
+  confirmPassword: String!
+}
+
+type Enrollment {
+  id: String!
+  userID: String!
+  courseID: String!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+input EnrollmentInput {
+  userID: String!
+  courseID: String!
+}
+
+type Role {
+  id: String!
+  name: String!
+  createdAt: Time!
+  updatedAt: Time!
+}
+
+input RoleInput {
+  name: String!
+}
