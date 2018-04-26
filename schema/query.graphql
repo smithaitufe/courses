@@ -1,0 +1,100 @@
+mutation createCategory{
+  createCategory(input: { name: "Information Technology"}) {
+    ok
+    errors {
+      key
+      message
+    }
+  }
+}
+query categories {
+  categories {
+    id
+    name
+    createdAt
+    updatedAt
+  }
+}
+
+mutation createCompany {
+  createCompany(input: { name: "Sourcegraph"}) {
+    ok
+    errors {
+      key
+      message
+    }
+  }
+}
+query companies {
+  companies {
+    id
+    name
+    createdAt
+    updatedAt
+  }
+}
+query company {
+  company(id: "bbg681rdofof4rhj0gh0") {
+    id
+    name
+    createdAt
+    updatedAt
+  }
+}
+
+mutation createCourse {
+  createCourse(input: { title: "Program Professionally using Python 3", code: "73495098", companyId: "bbg681rdofof4rhj0gh0", categoryId: "bbg60vrdofoeqai2g0og", hours: 300, amount: 2000}) {
+    ok
+    errors {
+      key
+      message
+    }
+  }
+}
+query course {
+  course(id: "bbg6ag3dofof2nl61stg") {
+    id
+    code
+    title
+    amount
+    hours
+    companyId
+    categoryId
+    createdAt
+    updatedAt
+	company {
+      name
+    }
+    category {
+      name
+    }
+  }
+}
+query courses {
+  courses(title: "programming") {
+    id
+    code
+    title
+    amount
+    hours
+    companyId
+    categoryId
+    createdAt
+    updatedAt
+    company {
+      name
+    }
+    category {
+      name
+    }
+  }
+}
+
+query roles {
+  roles {
+    id
+    name
+    createdAt
+    updatedAt
+  }
+}
