@@ -3,9 +3,14 @@ package context
 import "github.com/koding/multiconfig"
 
 type Config struct {
-	App    App
-	DB     DB
-	Logger Logger
+	TokenSigning TokenSigning
+	App          App
+	DB           DB
+	Logger       Logger
+}
+type TokenSigning struct {
+	Secret     string
+	Expiration int
 }
 type App struct {
 	Name    string

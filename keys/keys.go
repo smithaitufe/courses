@@ -16,4 +16,10 @@ const (
 	CompanyServiceKey    Key = "companyService"
 	EnrollmentServiceKey Key = "enrollmentService"
 	UserServiceKey       Key = "userService"
+	AuthServiceKey       Key = "authService"
+	RefreshTokenKey      Key = "x-token"
+	TokenKey             Key = "x-refresh-token"
+	UserIDKey            Key = "user_id"
+	IsAuthenticatedKey   Key = "is_authenticated"
+	LogKey               Key = "log"
 )

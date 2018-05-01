@@ -25,7 +25,7 @@ type Mutation {
   createUser(input: UserInput): CommonPayload
   createRole(input: RoleInput): CommonPayload
   createEnrollment(input: EnrollmentInput): CommonPayload
-
+  login(input: LoginInput): LoginPayload
 }
 
 
@@ -138,4 +138,15 @@ type Role {
 
 input RoleInput {
   name: String!
+}
+
+input LoginInput {
+  username: String!
+  password: String!
+}
+type LoginPayload {
+  Ok: Boolean!
+  errors: [Error!]
+  token: String
+  refreshToken: String
 }

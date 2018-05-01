@@ -39,6 +39,13 @@ func (r *userResolver) Roles(ctx context.Context) *[]*roleResolver {
 	}
 	return &l
 }
+func (r *userResolver) Enrollments(ctx context.Context) *[]*enrollmentResolver {
+	l := make([]*enrollmentResolver, 0, len(r.user.Enrollments))
+	for i := range l {
+		l[i] = &enrollmentResolver{enrollment: r.user.Enrollments[i]}
+	}
+	return &l
+}
 func (r *userResolver) CreatedAt(ctx context.Context) (graphql.Time, error) {
 	return graphql.Time{Time: r.user.CreatedAt}, nil
 }

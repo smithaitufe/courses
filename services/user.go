@@ -37,19 +37,6 @@ func (u *UserService) GetUser(id *string) (*models.User, error) {
 	if err != nil {
 		return nil, err
 	}
-
-	roles, err := u.roleService.FindRolesByUserId(user.ID)
-	if err != nil {
-		return nil, err
-	}
-	user.Roles = roles
-
-	enrollments, err := u.enrollmentService.FindEnrollmentsByUserId(user.ID)
-	if err != nil {
-		return nil, err
-	}
-	user.Enrollments = enrollments
-
 	return user, nil
 }
 
@@ -67,17 +54,16 @@ func (u *UserService) CreateUser(user *models.User) (*models.User, error) {
 }
 
 func (u *UserService) UpdateUser(user *models.User, id string) (*models.User, error) {
-	query := `UPDATE users
-	SET
-  last_name = :last_name,
-  first_name = :first_name,
-  password = :password,
-  email = :email,
-  country = :country,
-  dialing_code = :dialing_code,
-  phone_number = :phone_number,
-  updated_at = :updated_at
-	WHERE id = :id RETURNING users.*`
+	query := `UPDATE users 	SET
+			last_name = :last_name,
+			first_name = :first_name,
+			password = :password,
+			email = :email,
+			country = :country,
+			dialing_code = :dialing_code,
+			phone_number = :phone_number,
+			updated_at = :updated_at
+			WHERE id = :id RETURNING users.*`
 	params := make(map[string]interface{}, 0)
 
 	params["last_name"] = user.LastName
@@ -105,4 +91,26 @@ func (u *UserService) RemoveUser(id string) {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func (u *UserService) FindUserByEmail(email string) (*models.User, error) {
+	user := &models.User{}
+	query := "SELECT users.* FROM users WHERE email =$1"
+	row := u.db.QueryRowx(query, email)
+	err := row.StructScan(user)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
+func (u *UserService) FindUserByPhoneNumber(phoneNumber string) (*models.User, error) {
+	user := &models.User{}
+	query := "SELECT users.* FROM users WHERE phone_number =$1"
+	row := u.db.QueryRowx(query, phoneNumber)
+	err := row.StructScan(user)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }

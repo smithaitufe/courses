@@ -15,3 +15,7 @@ password="postgres"
 [logger]
 debug-mode=true
 format="%{color}%{time:2006/01/02 15:04:05 -07:00 MST} [%{level:.6s}] %{shortfile} : %{color:reset}%{message}"
+
+[token-signing]
+secret="Iamasecretbutnottheusualyouexpectlol"
+expiration=30

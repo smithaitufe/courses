@@ -2,7 +2,6 @@ package resolvers
 
 import (
 	"context"
-	"fmt"
 	"log"
 
 	ck "github.com/smithaitufe/courses/keys"
@@ -28,13 +27,11 @@ func (r *SchemaResolver) Courses(ctx context.Context, args coursesArgs) (*[]*cou
 	resolvers := make([]*courseResolver, 0)
 	for _, course := range courses {
 		if company, err := loaders.LoadCompany(ctx, course.CompanyID); err == nil {
-			fmt.Println(company)
 			course.Company = company
 		}
 		if category, err := loaders.LoadCategory(ctx, course.CategoryID); err == nil {
 			course.Category = category
 		}
-
 		resolvers = append(resolvers, &courseResolver{course: course})
 	}
 

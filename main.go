@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 
 	graphql "github.com/graph-gophers/graphql-go"
@@ -28,36 +29,33 @@ func main() {
 	categoryService := services.NewCategoryService(db, courseService)
 	enrollmentService := services.NewEnrollmentService(db, courseService)
 	userService := services.NewUserService(db, roleService, enrollmentService)
+	authService := services.NewAuthService(config)
 
 	ctx := context.Background()
-	log := services.NewLogger(config)
-
 	ctx = context.WithValue(ctx, ck.RoleServiceKey, roleService)
 	ctx = context.WithValue(ctx, ck.CourseServiceKey, courseService)
 	ctx = context.WithValue(ctx, ck.CategoryServiceKey, categoryService)
 	ctx = context.WithValue(ctx, ck.CompanyServiceKey, companyService)
 	ctx = context.WithValue(ctx, ck.EnrollmentServiceKey, enrollmentService)
 	ctx = context.WithValue(ctx, ck.UserServiceKey, userService)
+	ctx = context.WithValue(ctx, ck.AuthServiceKey, authService)
 
 	schemaFile := schema.GetSchema()
 	parsedSchema, err := graphql.ParseSchema(schemaFile, &resolvers.SchemaResolver{})
 	if err != nil {
 		log.Fatal(err)
 	}
-	c := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://192.168.43.45:8081"},
-	})
 	loggerHandler := &h.LoggerHandler{DebugMode: config.Logger.DebugMode}
-
-	http.Handle("/", c.Handler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	http.Handle("/", loggerHandler.Logging(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		page, err := ioutil.ReadFile("graphiql.html")
 		if err != nil {
 			log.Fatal(err)
 		}
-		w.Write(page)
+		w.Write([]byte(page))
 	})))
-
-	handlerWithContext := h.AppendContext(ctx, &h.Handler{Schema: parsedSchema, Loaders: loaders.NewLoaderCollection()})
+	c := cors.Default()
+	handlerWithAuthentication := h.Authenticate(&h.Handler{Schema: parsedSchema, Loaders: loaders.NewLoaderCollection()})
+	handlerWithContext := h.AppendContext(ctx, handlerWithAuthentication)
 	http.Handle("/graphql", c.Handler(loggerHandler.Logging(handlerWithContext)))
 	http.Handle("/graphql/", c.Handler(loggerHandler.Logging(handlerWithContext)))
 	fmt.Printf("Server is listening at %s:%s", config.App.Host, config.App.Port)

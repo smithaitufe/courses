@@ -50,12 +50,11 @@ func (e *EnrollmentService) CreateEnrollment(enrollment *models.Enrollment) (*mo
 }
 
 func (e *EnrollmentService) UpdateEnrollment(enrollment *models.Enrollment, id string) (*models.Enrollment, error) {
-	query := `UPDATE enrollments
-	SET
-  user_id = :user_id,
-  course_id = :course_id,
-  updated_at = :updated_at
-	WHERE id = :id RETURNING enrollments.*`
+	query := `UPDATE enrollments SET
+			user_id = :user_id,
+			course_id = :course_id,
+			updated_at = :updated_at
+			WHERE id = :id RETURNING enrollments.*`
 	params := make(map[string]interface{}, 0)
 
 	params["user_id"] = enrollment.UserID

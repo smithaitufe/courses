@@ -19,6 +19,12 @@ func (r *SchemaResolver) Users(ctx context.Context) (*[]*userResolver, error) {
 	}
 	resolvers := make([]*userResolver, 0)
 	for _, user := range users {
+		if roles, err := ctx.Value(ck.RoleServiceKey).(*services.RoleService).FindRolesByUserId(user.ID); err == nil {
+			user.Roles = roles
+		}
+		if enrollments, err := ctx.Value(ck.EnrollmentServiceKey).(*services.EnrollmentService).FindEnrollmentsByUserId(user.ID); err == nil {
+			user.Enrollments = enrollments
+		}
 		resolvers = append(resolvers, &userResolver{user: user})
 	}
 

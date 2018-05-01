@@ -1,10 +1,10 @@
 package models
 
 import (
-	"log"
 	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation"
+	"github.com/smithaitufe/courses/errors"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -36,7 +36,7 @@ func (user User) Validate() error {
 func (user *User) HashPassword() error {
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	if err != nil {
-		log.Println(err)
+		errors.LogOnError("Password hashing failed", err)
 		return err
 	}
 	user.Password = string(hash)
@@ -46,7 +46,7 @@ func (user *User) HashPassword() error {
 func (user *User) ComparePassword(password string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		log.Println(err)
+		errors.LogOnError("Could not complete password comparison", err)
 		return false
 	}
 	return true
